@@ -44,8 +44,11 @@ end
    end
    
   someMap = containers.Map({'fRef', 'fTest', 'rInd', 'tInd'}, {fRef, fTest, [matches(X,1), matches(Y,1), matches(Z,1)],[matches(X,2), matches(Y,2), matches(Z,2)]});
-  P = affimineMatrix(someMap); 
+  P = affineMatrix(someMap); 
   J = imwarp(imgTest, P);
-  
+  for k = 1:numOfMatches
+     distance1 = dist2((P.T * [fTest(1:2, matches(k, 2):matches(k,2));1]).', [fTest(1:2, matches(k,2):matches(k,2));1].');
+     distance1
+  end
   
 %end
