@@ -44,6 +44,8 @@ end
    end
    
   someMap = containers.Map({'fRef', 'fTest', 'rInd', 'tInd'}, {fRef, fTest, [matches(X,1), matches(Y,1), matches(Z,1)],[matches(X,2), matches(Y,2), matches(Z,2)]});
-  P = affineMatrix(someMap); 
-  P
+  P = affimineMatrix(someMap); 
+  J = imwarp(imgTest, P);
+  
+  
 %end
