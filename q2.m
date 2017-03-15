@@ -1,15 +1,16 @@
 addpath('./sift-0.9.12/sift');
 toyImg = imread('data/toy.jpg');
 toyImg = rgb2gray(toyImg);
-
+allTimeBestMatrix = [];
+allTimeBestInliers = 0;
 images=['data/01.jpg'; 'data/02.jpg'; 'data/03.jpg'; 'data/04.jpg'; 'data/05.jpg'; ...
     'data/06.jpg'; 'data/07.jpg'; 'data/08.jpg'; 'data/09.jpg'; 'data/10.jpg' ;'data/11.jpg'];
 images = string(images);
-%for i = 1:10
+% for i = 1:11
    % threshold is 0.8 
 % matches = a2q2b('./data/toy.jpg', './data/01.jpg'); 
 
-imTest = imread('./data/01.jpg');
+imTest = imread('data/11.jpg');
 imgTest = rgb2gray(imTest);
 
 [fRef, dRef] = sift(im2double(toyImg));
@@ -32,7 +33,9 @@ for i = 1:n
 end
 
 [numOfMatches, height] = size(matches);  
-
+imgBestMatrix =[];
+imgMaxInliers = 0;
+for f = 1: 400
    % generating 3 random matches
    X = randi(numOfMatches);
    Y = 0;
@@ -42,13 +45,30 @@ end
       Y = randi(numOfMatches);
       Z = randi(numOfMatches);
    end
-   
+   X
+   Y
+   Z
   someMap = containers.Map({'fRef', 'fTest', 'rInd', 'tInd'}, {fRef, fTest, [matches(X,1), matches(Y,1), matches(Z,1)],[matches(X,2), matches(Y,2), matches(Z,2)]});
-  P = affineMatrix(someMap); 
-  J = imwarp(imgTest, P);
+  matrix = affineMatrix(someMap); 
+ % J = imwarp(imgTest, matrix);
+  inliers = 0;
   for k = 1:numOfMatches
-     distance1 = dist2((P.T * [fTest(1:2, matches(k, 2):matches(k,2));1]).', [fTest(1:2, matches(k,2):matches(k,2));1].');
-     distance1
+     newMat = matrix;
+     newMat = [newMat(1,:); newMat(2,:)];
+      distance = dist2((newMat * [fRef(1:2, matches(k,1):matches(k,1));1]).', fTest(1:2, matches(k,2):matches(k,2)).');
+     if(distance <= 100)
+         inliers = inliers + 1;
+     end
   end
-  
-%end
+  if(inliers > imgMaxInliers)
+    imgMaxInliers = inliers;
+    imgBestMatrix = matrix;
+  end
+end
+imgMaxInliers
+imgBestMatrix
+% if(imgMaxInliers > allTimeBestInliers)
+%     allTimeBestInliers = imgMaxInliers;
+%     allTimeBestMatrix = imgBestMatrix;
+% end
+% end
